@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState,useContext } from "react";
 import { createAuthUserWithEmailAndPassword,createUserDocumentfromAuth } from "../../utils/firebase/fiebase.utils";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button-component";
 import './sign-up-form.component.scss'
+import { UserContext } from "../../contexts/user.context";
 
 const defaultFormFields = {
     displayName : '',
@@ -16,11 +17,15 @@ const SignUpForm = () => {
     const [formFields,setFormFields] = useState(defaultFormFields);
     const {displayName,email,password,confirmPassword} = formFields;
 
+    console.log("hit");
+
     const handleChange = (event) => {
         const {name,value} = event.target;
         setFormFields({...formFields,[name]:value});
     };
     console.log(formFields);
+
+    const {setCurrentUser}=useContext(UserContext);
 
     const resetFormFields = () => {
         setFormFields(defaultFormFields)
@@ -36,12 +41,15 @@ const SignUpForm = () => {
 
         try{
             const {user}= await createAuthUserWithEmailAndPassword(email,password);
+            setCurrentUser(user);
             await createUserDocumentfromAuth(user,{displayName});
             resetFormFields();
         }
         catch(error){
             if(error.code === 'auth/email-already-in-use')
                 alert('Email Already Exists')
+            if(error.code === 'auth/weak-password')
+                alert("Password must be of atleast 6 characters");
             else
             console.log(error.message)
         }
@@ -58,7 +66,7 @@ const SignUpForm = () => {
 
                 <FormInput label="Password : " type="password" required onChange={handleChange} name="password" value={password}/>
 
-                <FormInput label="Confirm Password : " type="password " required onChange={handleChange} name="confirmPassword" value={confirmPassword}/>
+                <FormInput label="Confirm Password : " type="password" required onChange={handleChange} name="confirmPassword" value={confirmPassword}/>
 
                 <Button content='Sign Up' type="submit" />
             </form> 
