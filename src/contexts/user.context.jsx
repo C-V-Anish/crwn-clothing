@@ -1,5 +1,5 @@
 import { createContext,useState,useEffect } from "react";
-import { onAuthStateChangedListener,signOutUser } from "../utils/firebase/fiebase.utils";
+import { onAuthStateChangedListener,signOutUser,createUserDocumentfromAuth } from "../utils/firebase/fiebase.utils";
 
 export const UserContext = createContext({
     currentUser:null,
@@ -12,7 +12,9 @@ export const UserProvider = ({children}) => {
 
     useEffect(()=>{
         const unsubscribe = onAuthStateChangedListener((user)=>{
-            console.log(user);
+            if(user){
+                createUserDocumentfromAuth(user)
+            }
             setCurrentUser(user);
         });
         return unsubscribe;
