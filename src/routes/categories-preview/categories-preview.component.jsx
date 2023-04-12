@@ -4,15 +4,18 @@ import CategoryPreview from "../../components/category-preview/category-preview.
 
 const CategoriesPreview = () => {
     const {categoriesMap} = useContext(CategoriesContext);
+    console.log("Retrieved Categories Map")
     return(
         <Fragment>
             {
                 Object.keys(categoriesMap).map((title) => {
+                    console.log("Inside Categories Preview");
                     const products = categoriesMap[title];
                     return (
                         <CategoryPreview key={title} title={title} products={products}/>
                     )
-                })}
+                })
+            }
         </Fragment>
     );
 };

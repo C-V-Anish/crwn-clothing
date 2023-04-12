@@ -11,13 +11,13 @@ const Category = () => {
     
     useEffect(() => {
       setProducts(categoriesMap[category]);
-    }, [categoriesMap,category])
+    }, [category,categoriesMap])
     
     return (
         <div className='category-container'>
             {
-                products && products.map((product)=><ProductCard key={product.id} product={product}/>)
-            }
+                products && products.map((product)=>(<ProductCard key={product.id} product={product}/>)
+            )}
         </div>
     )
 }
